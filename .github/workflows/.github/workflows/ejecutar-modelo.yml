@@ -1,0 +1,28 @@
+name: Ejecutar modelo de tesis
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ejecutar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+      - name: Ejecutar y verificar el modelo
+        run: python ejecutar_modelo.py
+      - name: Guardar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-tesis-apc
+          path: |
+            resultados_tesis_apc/
+            Modelo_Tesis_APC_Resultados.zip
+          if-no-files-found: error
+          retention-days: 30
